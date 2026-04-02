@@ -16,7 +16,8 @@ from azure.core.exceptions import HttpResponseError, ResourceExistsError, Resour
 from azure.identity import DefaultAzureCredential
 from azure.storage.fileshare import ShareServiceClient
 
-app = df.DFApp(http_auth_level=func.AuthLevel.FUNCTION)
+#app = df.DFApp(http_auth_level=func.AuthLevel.FUNCTION)
+app = df.DFApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 UNC_RE = re.compile(
     r"^\\\\(?P<account>[a-z0-9-]+)\.file\.core\.windows\.net\\(?P<share>[^\\]+)(?:\\(?P<path>.*))?$",
