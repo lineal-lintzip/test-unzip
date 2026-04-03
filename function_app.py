@@ -245,44 +245,23 @@ async def start_unzip_job(req: func.HttpRequest, client: df.DurableOrchestration
 
 @app.route(route='jobs/{instance_id}', methods=['GET'])
 @app.durable_client_input(client_name='client')
-@app.route(route='jobs/{instance_id}', methods=['GET'])
-@app.durable_client_input(client_name='client')
 async def get_job_status(req: func.HttpRequest, client: df.DurableOrchestrationClient) -> func.HttpResponse:
     instance_id = req.route_params.get('instance_id')
     status = await client.get_status(instance_id)
-
     if status is None:
-        return func.HttpResponse(
-            json.dumps({'error': 'Job not found'}),
-            status_code=404,
-            mimetype='application/json'
-        )
-
-    def normalize(value):
-        if value is None:
-            return None
-        if isinstance(value, (str, int, float, bool, list, dict)):
-            return value
-        if hasattr(value, "value"):
-            return value.value
-        return str(value)
+        return func.HttpResponse(json.dumps({'error': 'Job not found'}), status_code=404, mimetype='application/json')
 
     payload = {
         'instanceId': status.instance_id,
         'name': status.name,
-        'runtimeStatus': normalize(status.runtime_status),
+        'runtimeStatus': status.runtime_status,
         'createdTime': status.created_time.isoformat() if status.created_time else None,
         'lastUpdatedTime': status.last_updated_time.isoformat() if status.last_updated_time else None,
-        'input': normalize(status.input_),
-        'customStatus': normalize(status.custom_status),
-        'output': normalize(status.output),
+        'input': status.input_,
+        'customStatus': status.custom_status,
+        'output': status.output,
     }
-
-    return func.HttpResponse(
-        json.dumps(payload),
-        status_code=200,
-        mimetype='application/json'
-    )
+    return func.HttpResponse(json.dumps(payload), status_code=200, mimetype='application/json')
 
 
 @app.route(route='jobs/{instance_id}/terminate', methods=['POST'])
