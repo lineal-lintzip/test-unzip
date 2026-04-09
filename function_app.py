@@ -295,6 +295,17 @@ def act_upload(payload: Dict[str, Any]) -> Dict[str, Any]:
     svc = get_share_service(destination.account)
     share = svc.get_share_client(destination.share)
 
+    # Ensure the destination folder itself exists
+    # (ensure_dirs only creates parents of individual files, not the root dest folder)
+    if destination.normalized_path:
+        current = ""
+        for part in destination.normalized_path.split("/"):
+            current = f"{current}/{part}".strip("/")
+            try:
+                share.get_directory_client(current).create_directory()
+            except ResourceExistsError:
+                pass
+
     uploaded = skipped = failed = 0
     failures: List[Dict[str, str]] = []
 
