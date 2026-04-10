@@ -1,17 +1,3 @@
-"""
-Azure Durable Functions — ZIP unzip worker for Azure Files UNC paths.
-
-Fixes vs original:
-  - Streaming download (chunked, never readall into memory)
-  - Per-entry streaming extraction direct to temp file then chunked upload
-    (no temp-disk explosion — only one file at a time lives on disk)
-  - Fan-out in batches (UPLOAD_BATCH_SIZE) so Durable history payloads
-    stay small regardless of archive size
-  - Full file list never passed through orchestrator history
-  - CORS headers (OPTIONS pre-flight + every response)
-  - Terminate button support from UI
-"""
-
 from __future__ import annotations
 
 import json
