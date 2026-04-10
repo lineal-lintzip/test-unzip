@@ -65,4 +65,3 @@ jobs:
           app-name: 'test-unzip'
           slot-name: 'Production'
           package: 'release.zip'
-          remote-build: true
